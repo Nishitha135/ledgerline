@@ -1,6 +1,7 @@
 const express = require('express');
 const helmet = require('helmet');
 const { pool } = require('./db');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 app.use(helmet());
@@ -15,5 +16,7 @@ app.get('/health', async (req, res) => {
     res.status(500).json({ status: 'db down' });
   }
 });
+
+app.use('/auth', authRoutes);
 
 module.exports = app;
