@@ -1,7 +1,10 @@
 const { pool } = require('../src/db');
 const h = require('./helpers');
 
-beforeAll(() => h.ensureSystemAccount());
+beforeAll(async () => {
+  await h.ensureSystemAccount();
+  await Promise.all(Array.from({ length: 10 }, () => pool.query('SELECT pg_sleep(0.05)')));
+});
 afterAll(() => pool.end());
 
 describe('no overdraw under concurrency', () => {
