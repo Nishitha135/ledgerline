@@ -25,6 +25,8 @@ by mutation: remove the check, run the tests, see them fail.
 | 15 | Self-registering as admin | /auth/register always creates a holder. Admin and auditor exist only through the seed script | by construction |
 | 16 | Role escalation through a stale token | Role is read from the database on every request, not from the token | by construction |
 | 17 | Password guessing | bcrypt, rate limit on login and register, same message and similar timing for unknown email and wrong password | not tested |
+| 18 | Attacker piles refused attempts onto a victim's statement | Refusals for someone else's account are recorded against the attacker (account_id empty, the target in the reason), not on the victim's statement. Admin and auditor read them at GET /audit/refused | audit.test.js |
+| 19 | A balance quietly drifts from the ledger | GET /audit/reconcile recomputes, in one consistent snapshot, that every transaction nets to zero, all balances sum to 0, and each balance equals its ledger total | audit.test.js |
 
 ## Mutation results (defence removed, tests run)
 
@@ -56,7 +58,6 @@ and the race is repeated for five rounds.
 | I | JWTs live for one hour and cannot be revoked early | Role changes still apply at once because the role comes from the database |
 | J | Free hosting sleeps when idle, the first request can take about 50 seconds | Cost |
 | K | The rate limit covers login and register only, not the money endpoints | Not done yet |
-| L | A refused 403 is written against the victim's account, so any registered user can add refused rows (with their email) to another user's statement, and the rows cannot be deleted | Under review: the likely fix is to record it against the attacker and show it to the auditor |
 
 ## Not built, on purpose
 

@@ -3,6 +3,7 @@ const helmet = require('helmet');
 const { pool } = require('./db');
 const authRoutes = require('./routes/auth');
 const accountRoutes = require('./routes/accounts');
+const auditRoutes = require('./routes/audit');
 const moneyRoutes = require('./routes/money');
 
 const app = express();
@@ -21,6 +22,7 @@ app.get('/health', async (req, res) => {
 
 app.use('/auth', authRoutes);
 app.use('/accounts', accountRoutes);
+app.use('/audit', auditRoutes);
 app.use('/', moneyRoutes);
 
 // Malformed JSON and anything unexpected: JSON errors, no stack traces.

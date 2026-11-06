@@ -184,7 +184,7 @@ describe('authorisation', () => {
     expect(await h.balanceOf(bobAcct)).toBe(0n);
 
     const { rows: [r] } = await pool.query(
-      'SELECT count(*)::int AS n FROM refused_attempts WHERE user_id = $1 AND account_id = $2', [bob.id, aliceAcct]);
+      'SELECT count(*)::int AS n FROM refused_attempts WHERE user_id = $1 AND account_id IS NULL AND reason LIKE $2', [bob.id, `%account ${aliceAcct}%`]);
     expect(r.n).toBe(3); // every refused attempt is on the record
   });
 

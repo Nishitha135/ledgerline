@@ -68,7 +68,7 @@ function depositWork(ctx, accountId) {
     const acct = await getAccount(client, accountId);
     if (!acct || acct.is_system) return refuse(client, ctx, null, 404, 'account not found');
     const entitled = ctx.user.role === 'admin' || isOwner(ctx.user, acct);
-    if (!entitled) return refuse(client, ctx, accountId, 403, 'not entitled to deposit into this account');
+    if (!entitled) return refuse(client, ctx, null, 403, `not entitled to deposit into account ${accountId}`);
 
     const systemId = await getSystemId(client);
     await lockAccounts(client, [accountId, systemId]);
@@ -87,7 +87,7 @@ function withdrawWork(ctx, accountId) {
   return async (client) => {
     const acct = await getAccount(client, accountId);
     if (!acct || acct.is_system) return refuse(client, ctx, null, 404, 'account not found');
-    if (!isOwner(ctx.user, acct)) return refuse(client, ctx, accountId, 403, 'not entitled to withdraw from this account');
+    if (!isOwner(ctx.user, acct)) return refuse(client, ctx, null, 403, `not entitled to withdraw from account ${accountId}`);
 
     const systemId = await getSystemId(client);
     const locked = await lockAccounts(client, [accountId, systemId]);
@@ -111,7 +111,7 @@ function transferWork(ctx, fromId, toId) {
     if (fromId === toId) return refuse(client, ctx, fromId, 400, 'cannot transfer to the same account');
     const src = await getAccount(client, fromId);
     if (!src || src.is_system) return refuse(client, ctx, null, 404, 'source account not found');
-    if (!isOwner(ctx.user, src)) return refuse(client, ctx, fromId, 403, 'not entitled to move money from this account');
+    if (!isOwner(ctx.user, src)) return refuse(client, ctx, null, 403, `not entitled to move money from account ${fromId}`);
     const dst = await getAccount(client, toId);
     if (!dst || dst.is_system) return refuse(client, ctx, fromId, 404, 'destination account not found');
 
