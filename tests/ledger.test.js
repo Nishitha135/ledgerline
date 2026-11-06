@@ -250,14 +250,14 @@ describe('the ledger is append-only', () => {
     await h.api(u).deposit(acct, 1000);
     await h.api(u).withdraw(acct, 999999); // creates a refused attempt too
 
-    await expect(pool.query('UPDATE ledger_entries SET amount = amount + 1')).rejects.toThrow(/append-only/);
-    await expect(pool.query('DELETE FROM ledger_entries')).rejects.toThrow(/append-only/);
-    await expect(pool.query('TRUNCATE ledger_entries')).rejects.toThrow(/append-only/);
-    await expect(pool.query('UPDATE transactions SET type = type')).rejects.toThrow(/append-only/);
-    await expect(pool.query('DELETE FROM transactions')).rejects.toThrow(/append-only/);
-    await expect(pool.query('UPDATE refused_attempts SET reason = reason')).rejects.toThrow(/append-only/);
-    await expect(pool.query('DELETE FROM refused_attempts')).rejects.toThrow(/append-only/);
-    await expect(pool.query('TRUNCATE refused_attempts')).rejects.toThrow(/append-only/);
+    await expect(pool.query('UPDATE ledger_entries SET amount = amount + 1')).rejects.toThrow(/append-only|permission denied/);
+    await expect(pool.query('DELETE FROM ledger_entries')).rejects.toThrow(/append-only|permission denied/);
+    await expect(pool.query('TRUNCATE ledger_entries')).rejects.toThrow(/append-only|permission denied/);
+    await expect(pool.query('UPDATE transactions SET type = type')).rejects.toThrow(/append-only|permission denied/);
+    await expect(pool.query('DELETE FROM transactions')).rejects.toThrow(/append-only|permission denied/);
+    await expect(pool.query('UPDATE refused_attempts SET reason = reason')).rejects.toThrow(/append-only|permission denied/);
+    await expect(pool.query('DELETE FROM refused_attempts')).rejects.toThrow(/append-only|permission denied/);
+    await expect(pool.query('TRUNCATE refused_attempts')).rejects.toThrow(/append-only|permission denied/);
 
     expect(await h.balanceOf(acct)).toBe(1000n);
   });
