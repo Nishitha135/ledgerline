@@ -28,6 +28,7 @@ by mutation: remove the check, run the tests, see them fail.
 | 18 | Attacker piles refused attempts onto a victim's statement | Refusals for someone else's account are recorded against the attacker (account_id empty, the target in the reason), not on the victim's statement. Admin and auditor read them at GET /audit/refused | audit.test.js |
 | 19 | A balance quietly drifts from the ledger | GET /audit/reconcile recomputes, in one consistent snapshot, that every transaction nets to zero, all balances sum to 0, and each balance equals its ledger total | audit.test.js |
 | 20 | Login and register rate limit ignored or shared behind the host's proxies (every user looks like one IP, or a client forges X-Forwarded-For to dodge the limit) | trust proxy is set to the measured number of hops (3 on Render: loopback, internal proxy, Cloudflare), so the client address is read from the right-hand side of X-Forwarded-For. Checked on the live URL with a forged header | proxy.test.js |
+| 21 | A role that may not move money (auditor, or an admin trying to withdraw) tries anyway, leaving no trace | The role gate itself writes the attempt to refused_attempts (no account, the role and target in the reason) and answers 403. Holders pass every gate, so they cannot use it to add rows | rolegate.test.js |
 
 ## Mutation results (defence removed, tests run)
 
@@ -41,6 +42,7 @@ by mutation: remove the check, run the tests, see them fail.
 | Entitlement check on deposit | 1 test fails |
 | GRANT UPDATE on ledger_entries to the app role | 1 test fails (privileges.test.js). The trigger still blocks the update, the grant layer is what the test checks |
 | trust proxy setting | 2 tests fail (proxy.test.js) |
+| Role gate that records the refusal (back to a plain 403) | 1 test fails (rolegate.test.js) |
 
 One test was weak at first: the 20-concurrent-withdrawals test passed even without the row lock,
 because a cold connection pool made the requests run one after another. The pool is now warmed
