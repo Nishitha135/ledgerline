@@ -38,6 +38,7 @@ by mutation: remove the check, run the tests, see them fail.
 | Ownership check on transfer | 1 test fails |
 | Ownership check on withdrawal | 1 test fails |
 | Entitlement check on deposit | 1 test fails |
+| GRANT UPDATE on ledger_entries to the app role | 1 test fails (privileges.test.js). The trigger still blocks the update, the grant layer is what the test checks |
 
 One test was weak at first: the 20-concurrent-withdrawals test passed even without the row lock,
 because a cold connection pool made the requests run one after another. The pool is now warmed
@@ -47,7 +48,7 @@ and the race is repeated for five rounds.
 
 | # | Risk | Why I left it |
 |---|---|---|
-| A | The application connects as the database owner, so anyone with the DB credentials can disable the triggers and edit the ledger | Triggers stop the application and ordinary SQL users, not a superuser. The fix is a least-privilege role (INSERT and SELECT only on the ledger tables) and a hash chain. Not done yet |
+| A | Whoever holds the database OWNER credentials (including Neon account access) can still disable the triggers and edit the ledger | The application no longer has them: it connects as ledger_app (INSERT and SELECT on the ledger tables, UPDATE only on accounts.balance and replay_count, no TRUNCATE, cannot touch triggers or schema). The owner password is not in the app environment. A hash chain over ledger rows would also expose tampering by the owner. Not built |
 | B | idempotency_keys rows can be updated or deleted (they hold replay counts and stored responses, not money) | Money is safe, but the duplicate evidence could be altered |
 | C | All deposits and withdrawals lock the single EXTERNAL account row, so they serialise globally | Correct but a throughput limit. Accepted for this scale |
 | D | Idempotency keys are kept forever | No expiry job. Accepted for this scale |
