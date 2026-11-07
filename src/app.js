@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const helmet = require('helmet');
 const { pool } = require('./db');
@@ -9,8 +10,25 @@ const moneyRoutes = require('./routes/money');
 const app = express();
 // Render: loopback, internal proxy, Cloudflare in front of the app (measured from X-Forwarded-For).
 app.set('trust proxy', 3);
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],       // no inline scripts: a script injected into the page cannot run
+      styleSrc: ["'self'"],
+      imgSrc: ["'self'", 'data:'],
+      connectSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      baseUri: ["'self'"],
+      formAction: ["'self'"],
+      frameAncestors: ["'none'"],
+      upgradeInsecureRequests: null,
+    },
+  },
+}));
 app.use(express.json({ limit: '10kb' }));
+
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.get('/health', async (req, res) => {
   try {

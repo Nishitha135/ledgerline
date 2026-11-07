@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LedgerLine</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <h1>LedgerLine</h1>
+    <div class="who"><span id="who"></span> <button id="logout" type="button" class="secondary small" hidden>Sign out</button></div>
+  </header>
+  <main>
+    <section id="login-view" class="card narrow" hidden>
+      <h2>Sign in</h2>
+      <form id="login-form">
+        <label>Email <input id="email" type="email" autocomplete="username" required></label>
+        <label>Password <input id="password" type="password" autocomplete="current-password" required></label>
+        <div class="row">
+          <button type="submit">Sign in</button>
+          <button type="button" id="register" class="secondary">Create holder account</button>
+        </div>
+      </form>
+      <p id="login-msg" class="msg" role="alert"></p>
+      <p class="hint">Demo accounts (fills the form):
+        <button type="button" class="link" data-demo="admin@ledgerline.test|AdminDemo#2026">admin</button>
+        <button type="button" class="link" data-demo="holder@ledgerline.test|HolderDemo#2026">holder</button>
+        <button type="button" class="link" data-demo="auditor@ledgerline.test|AuditorDemo#2026">auditor</button>
+      </p>
+    </section>
+
+    <section id="app-view" hidden>
+      <div id="readonly-note" class="note" hidden>Signed in as an auditor: read-only. You can inspect everything and run the checks below, but you cannot move money.</div>
+
+      <div class="card">
+        <h2>Accounts</h2>
+        <div class="scroll"><table id="accounts"></table></div>
+      </div>
+
+      <div id="money" class="grid">
+        <form id="deposit-form" class="card">
+          <h3>Deposit</h3>
+          <label>Account <select id="dep-account"></select></label>
+          <label>Amount (&#8377;) <input id="dep-amount" inputmode="decimal" placeholder="250.00" autocomplete="off"></label>
+          <button type="submit">Deposit</button>
+        </form>
+        <form id="withdraw-form" class="card">
+          <h3>Withdraw</h3>
+          <label>Account <select id="wd-account"></select></label>
+          <label>Amount (&#8377;) <input id="wd-amount" inputmode="decimal" placeholder="100.00" autocomplete="off"></label>
+          <button type="submit">Withdraw</button>
+        </form>
+        <form id="transfer-form" class="card">
+          <h3>Transfer</h3>
+          <label>From <select id="tr-from"></select></label>
+          <label>To account number <input id="tr-to" inputmode="numeric" placeholder="3" autocomplete="off"></label>
+          <label>Amount (&#8377;) <input id="tr-amount" inputmode="decimal" placeholder="50.00" autocomplete="off"></label>
+          <button type="submit">Transfer</button>
+        </form>
+      </div>
+
+      <div id="result" class="result" role="status" aria-live="polite" hidden></div>
+
+      <form id="create-form" class="card" hidden>
+        <h3>Create an account (admin)</h3>
+        <label>Holder email <input id="cr-email" type="email" required></label>
+        <label>Account name <input id="cr-name" required maxlength="100"></label>
+        <label>Authorised overdraft (&#8377;, empty for none) <input id="cr-overdraft" inputmode="decimal" autocomplete="off"></label>
+        <button type="submit">Create account</button>
+      </form>
+
+      <div class="card">
+        <h2>Statement</h2>
+        <div id="statement"><p class="hint">Choose an account above.</p></div>
+      </div>
+
+      <div id="audit" class="card" hidden>
+        <h2>Audit</h2>
+        <button type="button" id="recheck" class="secondary small">Run the checks again</button>
+        <div id="reconcile"></div>
+        <h3>Refused attempts</h3>
+        <div id="refused" class="scroll"></div>
+      </div>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>

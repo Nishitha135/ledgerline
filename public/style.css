@@ -1,0 +1,37 @@
+[hidden] { display: none !important; }
+* { box-sizing: border-box; }
+body { margin: 0; font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: #f4f6f8; color: #1d2733; }
+header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: #12344d; color: #fff; }
+header h1 { margin: 0; font-size: 20px; }
+.who { display: flex; gap: 10px; align-items: center; font-size: 14px; }
+main { max-width: 1000px; margin: 0 auto; padding: 16px; }
+.card { background: #fff; border: 1px solid #dde3ea; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+.card.narrow { max-width: 420px; margin: 40px auto; }
+h2 { margin: 0 0 10px; font-size: 18px; }
+h3 { margin: 0 0 10px; font-size: 16px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.grid .card { margin: 0; }
+label { display: block; margin: 0 0 10px; font-weight: 600; font-size: 13px; }
+input, select { display: block; width: 100%; margin-top: 4px; padding: 8px; font: inherit; border: 1px solid #b9c4d0; border-radius: 6px; background: #fff; }
+button { padding: 8px 14px; font: inherit; font-weight: 600; color: #fff; background: #1c6dd0; border: 0; border-radius: 6px; cursor: pointer; }
+button:disabled { opacity: .5; cursor: progress; }
+button.secondary { background: #e6ebf1; color: #1d2733; }
+button.small { padding: 4px 10px; font-size: 13px; }
+button.link { background: none; color: #1c6dd0; padding: 0 4px; text-decoration: underline; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+.scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #e6ebf1; white-space: nowrap; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; }
+tr.refused td { background: #fdf0f0; }
+.hint { color: #5d6b7a; font-size: 13px; }
+.msg { color: #b3261e; min-height: 1.2em; }
+.note { background: #fff7e0; border: 1px solid #ecd9a0; padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; }
+.result { padding: 12px 16px; border-radius: 8px; margin: 16px 0; border: 1px solid; }
+.result.good { background: #e8f6ec; border-color: #a9d9b7; }
+.result.bad { background: #fdecea; border-color: #f0b3ae; }
+.result .key { margin-top: 6px; font: 12px/1.3 ui-monospace, Menlo, Consolas, monospace; color: #5d6b7a; word-break: break-all; }
+.result .note { margin: 8px 0 0; }
+.result button { margin-top: 8px; }
+.good-text { color: #1b7a3a; font-weight: 700; }
+.bad-text { color: #b3261e; font-weight: 700; }
