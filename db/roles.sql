@@ -8,7 +8,7 @@ BEGIN
 END
 $$;
 
-ALTER ROLE ledger_app PASSWORD :'app_password' NOSUPERUSER NOCREATEDB NOCREATEROLE;
+ALTER ROLE ledger_app PASSWORD :'app_password';
 
 REVOKE ALL ON ALL TABLES IN SCHEMA public FROM ledger_app;
 GRANT USAGE ON SCHEMA public TO ledger_app;
