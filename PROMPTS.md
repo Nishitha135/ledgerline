@@ -38,3 +38,15 @@ what I did instead, and the commit.
 **What I did:** I did not guess the number of hops (too low shares one bucket, too high lets a client forge its own address). I added a temporary endpoint that echoed X-Forwarded-For, read three addresses from a live request (internal proxy, Cloudflare, my own IP) and set trust proxy to 3. I checked on the live URL that a forged X-Forwarded-For header is ignored, pinned the behaviour with proxy.test.js (mutation: remove the setting and it fails), and removed the debug endpoint.
 
 **Commit:** https://github.com/Nishitha135/ledgerline/commit/85baba2
+
+## 2026-11-07: Refusals by roles that may not move money left no record (audit trail)
+
+**Asked:** Build the money endpoints with role checks, and record every refused attempt.
+
+**Produced:** requireRole(...) as route middleware. It answers 403 immediately, before any refusal is recorded.
+
+**What was wrong:** The spec says every refused attempt must be on the record. An auditor, or an admin trying to withdraw, got a 403 and left no trace, because the role gate ran before the code that writes refused_attempts. Claude flagged this as a suspected gap when we listed what was still missing; I did not spot it myself. I did not take the suspicion on trust.
+
+**What I did:** Wrote rolegate.test.js first (auditor and admin make four refused attempts, expect four rows and unchanged balances), stashed the fix and ran it against the old code to confirm it fails (1 failed), then replaced requireRole on the three money routes with a roleGate that writes the refusal (no account, the role and target in the reason) and then answers 403. Holders pass every gate, so a holder cannot use it to add rows. With the fix all 30 tests pass.
+
+**Commit:** https://github.com/Nishitha135/ledgerline/commit/0f19e16
