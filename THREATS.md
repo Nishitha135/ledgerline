@@ -27,6 +27,7 @@ by mutation: remove the check, run the tests, see them fail.
 | 17 | Password guessing | bcrypt, rate limit on login and register, same message and similar timing for unknown email and wrong password | not tested |
 | 18 | Attacker piles refused attempts onto a victim's statement | Refusals for someone else's account are recorded against the attacker (account_id empty, the target in the reason), not on the victim's statement. Admin and auditor read them at GET /audit/refused | audit.test.js |
 | 19 | A balance quietly drifts from the ledger | GET /audit/reconcile recomputes, in one consistent snapshot, that every transaction nets to zero, all balances sum to 0, and each balance equals its ledger total | audit.test.js |
+| 20 | Login and register rate limit ignored or shared behind the host's proxies (every user looks like one IP, or a client forges X-Forwarded-For to dodge the limit) | trust proxy is set to the measured number of hops (3 on Render: loopback, internal proxy, Cloudflare), so the client address is read from the right-hand side of X-Forwarded-For. Checked on the live URL with a forged header | proxy.test.js |
 
 ## Mutation results (defence removed, tests run)
 
@@ -39,6 +40,7 @@ by mutation: remove the check, run the tests, see them fail.
 | Ownership check on withdrawal | 1 test fails |
 | Entitlement check on deposit | 1 test fails |
 | GRANT UPDATE on ledger_entries to the app role | 1 test fails (privileges.test.js). The trigger still blocks the update, the grant layer is what the test checks |
+| trust proxy setting | 2 tests fail (proxy.test.js) |
 
 One test was weak at first: the 20-concurrent-withdrawals test passed even without the row lock,
 because a cold connection pool made the requests run one after another. The pool is now warmed
@@ -59,6 +61,7 @@ and the race is repeated for five rounds.
 | I | JWTs live for one hour and cannot be revoked early | Role changes still apply at once because the role comes from the database |
 | J | Free hosting sleeps when idle, the first request can take about 50 seconds | Cost |
 | K | The rate limit covers login and register only, not the money endpoints | Not done yet |
+| M | The proxy hop count is a fact about the host. If the hosting path changes (different platform, a hop added or removed), trust proxy must be re-measured, or rate limiting is wrong | Re-check with the X-Forwarded-For header after any hosting change. Deployed on Render only |
 
 ## Not built, on purpose
 
