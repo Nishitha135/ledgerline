@@ -22,8 +22,6 @@ app.get('/health', async (req, res) => {
   }
 });
 
-// TEMPORARY: remove once trust proxy is verified
-app.get('/_ip', (req, res) => res.json({ xff: req.headers['x-forwarded-for'] || null, remote: req.socket.remoteAddress, ip: req.ip }));
 app.use('/auth', authRoutes);
 app.use('/accounts', accountRoutes);
 app.use('/audit', auditRoutes);
