@@ -7,6 +7,8 @@ const auditRoutes = require('./routes/audit');
 const moneyRoutes = require('./routes/money');
 
 const app = express();
+// Render: loopback, internal proxy, Cloudflare in front of the app (measured from X-Forwarded-For).
+app.set('trust proxy', 3);
 app.use(helmet());
 app.use(express.json({ limit: '10kb' }));
 
