@@ -50,3 +50,15 @@ what I did instead, and the commit.
 **What I did:** Wrote rolegate.test.js first (auditor and admin make four refused attempts, expect four rows and unchanged balances), stashed the fix and ran it against the old code to confirm it fails (1 failed), then replaced requireRole on the three money routes with a roleGate that writes the refusal (no account, the role and target in the reason) and then answers 403. Holders pass every gate, so a holder cannot use it to add rows. With the fix all 30 tests pass.
 
 **Commit:** https://github.com/Nishitha135/ledgerline/commit/0f19e16
+
+## 2026-11-07: Sign in failed silently when the server was unreachable (error handling)
+
+**Asked:** Build a web UI for sign in, accounts, deposit, withdraw, transfer and the statement.
+
+**Produced:** A UI whose money forms handled a network failure (with a retry using the same key), but whose sign in and register code did not. A failed fetch threw an exception that nothing caught.
+
+**What was wrong:** With the server stopped, clicking Sign in did nothing: no message, no error on the page. A screenshot of the sign-in page with no error text made Claude suspect this; I reproduced it by stopping the local server and clicking Sign in, and nothing happened.
+
+**What I did:** Moved the network error handling into the shared api() helper so it returns a clear result (Cannot reach the server) for every caller, and made the money path treat it as an unknown outcome, so it still offers a retry with the same Idempotency-Key. I checked by hand with the server stopped: sign in shows the message, and deposit shows that it may or may not have been processed. There is no automated browser test for this.
+
+**Commit:** https://github.com/Nishitha135/ledgerline/commit/9f19299
