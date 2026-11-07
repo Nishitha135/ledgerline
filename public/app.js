@@ -39,7 +39,12 @@ function toPaise(text) {
 async function api(method, path, body, extraHeaders) {
   const headers = { 'Content-Type': 'application/json', ...extraHeaders };
   if (state.token) headers.Authorization = `Bearer ${state.token}`;
-  const res = await fetch(path, { method, headers, body: body ? JSON.stringify(body) : undefined });
+  let res;
+  try {
+    res = await fetch(path, { method, headers, body: body ? JSON.stringify(body) : undefined });
+  } catch (err) {
+    return { status: 0, ok: false, network: true, replayed: false, data: { error: 'Cannot reach the server. Check your connection and try again.' } };
+  }
   let data = null;
   try { data = await res.json(); } catch (e) { data = null; }
   if (res.status === 401 && state.token) logout('Session expired. Please sign in again.');
@@ -274,7 +279,8 @@ async function sendMoney(attempt) {
   let r = null;
   try {
     r = await api('POST', attempt.path, attempt.body, { 'Idempotency-Key': attempt.key });
-    state.pending = r.status >= 500;
+    state.pending = r.status >= 500 || r.network === true;
+    if (r.network) r = null;
   } catch (err) {
     state.pending = true; // network failure: we do not know whether it was processed
   }
