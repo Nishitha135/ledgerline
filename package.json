@@ -5,7 +5,8 @@
   "scripts": {
     "test": "jest --runInBand",
     "start": "node src/server.js",
-    "seed": "node scripts/seed.js"
+    "seed": "node scripts/seed.js",
+    "attack": "node scripts/attack.js"
   },
   "keywords": [],
   "author": "",
