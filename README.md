@@ -126,3 +126,12 @@ ownership check each makes tests fail (see THREATS.md).
 Multiple currencies, scheduled or batch transfers, reversals and refunds, and holds. There is no AI inside
 the product and nothing that moves money on its own. A small system whose balances are always right
 seemed better than a large one that is not sure. Known gaps are listed in THREATS.md.
+
+## Attack it yourself
+
+`npm run attack` fires the kinds of attacks a reviewer would, over HTTP, at a running server: 20
+simultaneous withdrawals against a balance that covers three, 10 identical requests with one key, one user
+touching another user's money, the auditor and the admin trying to move money, bad amounts and bad tokens,
+and finally the reconcile check. Locally: start the server with `npm start`, then run `npm run attack`.
+Against another host: set `BASE=https://your-host` first. It registers fresh users and leaves permanent
+ledger rows, because the ledger is append-only.
