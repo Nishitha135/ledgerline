@@ -132,6 +132,9 @@ function renderAccounts() {
   const t = clear($('accounts'));
   t.append(h('thead', {}, h('tr', {}, ...['No.', 'Account', 'Owner', 'Balance', 'Overdraft limit', ''].map((x) => h('th', {}, x)))));
   const body = h('tbody');
+  if (!state.accounts.length) {
+    body.append(h('tr', {}, h('td', { colspan: '6' }, 'No accounts yet. Accounts are created by an administrator: sign in as admin@ledgerline.test and use Create an account.')));
+  }
   for (const a of state.accounts) {
     const btn = h('button', { type: 'button', class: 'secondary small' }, 'Statement');
     btn.addEventListener('click', () => loadStatement(a.id));
