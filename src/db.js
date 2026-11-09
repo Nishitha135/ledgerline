@@ -3,6 +3,10 @@ const { Pool } = require('pg');
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
+// An idle connection can be closed by the database (Neon suspends idle compute).
+// Without a handler Node treats this 'error' event as fatal and the process exits.
+pool.on('error', (err) => console.error('idle database client error:', err.message));
+
 // Runs fn inside ONE transaction: commit on success, rollback on any error.
 async function withTx(fn) {
   const client = await pool.connect();
