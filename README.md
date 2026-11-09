@@ -19,7 +19,7 @@ take about 50 seconds. Open `/health` first and wait for `{"status":"ok"}`.
 | Account holder | holder@ledgerline.test | HolderDemo#2026 |
 | Auditor (read-only) | auditor@ledgerline.test | AuditorDemo#2026 |
 
-These are demo credentials only. Anyone can also register a new account holder on the sign-in page.
+These are demo credentials only. Anyone can also register a new account holder on the sign-in page. A new holder has no account until an administrator creates one (sign in as the admin and use "Create an account").
 
 ## What each role can do
 
