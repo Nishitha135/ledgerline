@@ -62,3 +62,15 @@ what I did instead, and the commit.
 **What I did:** Moved the network error handling into the shared api() helper so it returns a clear result (Cannot reach the server) for every caller, and made the money path treat it as an unknown outcome, so it still offers a retry with the same Idempotency-Key. I checked by hand with the server stopped: sign in shows the message, and deposit shows that it may or may not have been processed. There is no automated browser test for this.
 
 **Commit:** https://github.com/Nishitha135/ledgerline/commit/9f19299
+
+## 2026-11-09: Sign-out left the previous user's data on the page (access control, UI)
+
+**Asked:** Build a web UI with sign in, sign out and per-role views.
+
+**Produced:** A single-page UI whose sign-out cleared the token and the in-memory state but not the page. The page is not reloaded, so the previous user's last result box and statement stayed in it and showed up for whoever signed in next.
+
+**What was wrong:** I took a screenshot of the auditor view for the README, and it still showed the holder's "Deposit done" box and "Send again with the same key" button. When I sent Claude both screenshots it noticed the same Idempotency-Key in both. On a shared browser a second user would see the first user's statement until they clicked something. The server never sent anything new (every API call is authorised separately), but a reviewer testing two accounts in one browser would fairly call it an access-control failure. The stale "send again" button also threw an error, because the saved request had been cleared.
+
+**What I did:** Added resetView(), called on sign-out, which clears the result box, statement, accounts table, audit panels, account pickers and form fields. I checked by hand on my local server: signed in as a holder, opened a statement and made a deposit, signed out, signed in as another user, and nothing from the first session was visible. I added a source-level test; there is no automated browser test.
+
+**Commit:** https://github.com/Nishitha135/ledgerline/commit/cf401d4
