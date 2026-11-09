@@ -52,9 +52,21 @@ async function api(method, path, body, extraHeaders) {
 }
 
 // ---------- session ----------
+// Sign-out must also clear what the previous user saw: the page is not reloaded, so the DOM is kept.
+function resetView() {
+  clear($('result')).hidden = true;
+  clear($('statement')).append(h('p', { class: 'hint' }, 'Choose an account above.'));
+  clear($('reconcile'));
+  clear($('refused'));
+  clear($('accounts'));
+  for (const id of ['dep-account', 'wd-account', 'tr-from']) clear($(id));
+  for (const id of ['dep-amount', 'wd-amount', 'tr-to', 'tr-amount', 'cr-email', 'cr-name', 'cr-overdraft']) $(id).value = '';
+}
+
 function logout(message) {
   sessionStorage.clear();
   state.token = null; state.user = null; state.accounts = []; state.last = null; state.pending = false; state.statementFor = null;
+  resetView();
   render();
   $('login-msg').textContent = message || '';
 }

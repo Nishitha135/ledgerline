@@ -27,3 +27,13 @@ test('the client never builds markup from strings (untrusted text only goes in a
   const src = fs.readFileSync(path.join(__dirname, '..', 'public', 'app.js'), 'utf8');
   expect(src).not.toMatch(/innerHTML|outerHTML|insertAdjacentHTML|document\.write/);
 });
+
+test('signing out clears what the previous user saw (the page is not reloaded)', () => {
+  const src = fs.readFileSync(path.join(__dirname, '..', 'public', 'app.js'), 'utf8');
+  const reset = src.slice(src.indexOf('function resetView'), src.indexOf('function logout'));
+  for (const id of ['result', 'statement', 'accounts', 'reconcile', 'refused']) {
+    expect(reset).toContain(`$('${id}')`);
+  }
+  const logout = src.slice(src.indexOf('function logout'), src.indexOf('function render'));
+  expect(logout).toContain('resetView()');
+});
