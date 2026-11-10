@@ -135,3 +135,13 @@ touching another user's money, the auditor and the admin trying to move money, b
 and finally the reconcile check. Locally: start the server with `npm start`, then run `npm run attack`.
 Against another host: set `BASE=https://your-host` first. It registers fresh users and leaves permanent
 ledger rows, because the ledger is append-only.
+
+## Screenshots
+
+Taken from the running app, in case the free host is asleep when you open the live site.
+The last one is from my local run of the attack script (npm run attack), not from the live site.
+
+![A replayed request: same key, balance unchanged](docs/screenshots/01-replay.png)
+![Statement with posted and refused entries](docs/screenshots/02-statement.png)
+![Auditor view: the books balance](docs/screenshots/03-audit.png)
+![Attack script, local run](docs/screenshots/04-attack-local.png)
