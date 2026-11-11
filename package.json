@@ -6,7 +6,8 @@
     "test": "jest --runInBand",
     "start": "node src/server.js",
     "seed": "node scripts/seed.js",
-    "attack": "node scripts/attack.js"
+    "attack": "node scripts/attack.js",
+    "bootstrap-admin": "node scripts/bootstrap-admin.js"
   },
   "keywords": [],
   "author": "",

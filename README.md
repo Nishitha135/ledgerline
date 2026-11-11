@@ -145,3 +145,10 @@ The last one is from my local run of the attack script (npm run attack), not fro
 ![Statement with posted and refused entries](docs/screenshots/02-statement.png)
 ![Auditor view: the books balance](docs/screenshots/03-audit.png)
 ![Attack script, local run](docs/screenshots/04-attack-local.png)
+
+## First administrator (real deployments)
+
+`npm run seed` creates demo accounts with published passwords and is for demos only. For a real deployment
+create the first administrator with `ADMIN_EMAIL=you@example.com ADMIN_PASSWORD='a long password'
+npm run bootstrap-admin` (password at least 12 characters, read from the environment). It does nothing
+if an administrator already exists. Every other administrator action is then done inside the app.
