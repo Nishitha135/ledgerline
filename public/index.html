@@ -12,23 +12,51 @@
     <div class="who"><span id="who"></span> <button id="logout" type="button" class="secondary small" hidden>Sign out</button></div>
   </header>
   <main>
-    <section id="login-view" class="card narrow" hidden>
-      <h2>Sign in</h2>
-      <form id="login-form">
-        <label>Email <input id="email" type="email" autocomplete="username" required></label>
-        <label>Password <input id="password" type="password" autocomplete="current-password" required></label>
-        <div class="row">
-          <button type="submit">Sign in</button>
-          <button type="button" id="register" class="secondary">Create holder account</button>
+    <section id="login-view" class="login" hidden>
+    <div class="login-brand">
+      <div class="brand-top">
+        <span class="brand-mark" aria-hidden="true">L</span>
+        <span class="brand-name">LedgerLine</span>
+      </div>
+      <h2 class="brand-title">Move money. Keep the proof.</h2>
+      <p class="brand-text">Deposits, withdrawals and transfers where the books always balance, a repeated request never pays twice, and every entry stays on the record.</p>
+      <ul class="brand-points">
+        <li>Send a request again and you get the first answer back, not a second payment.</li>
+        <li>The server decides who may move money, on every request.</li>
+        <li>Every posting and every refusal is kept in a ledger that cannot be quietly edited.</li>
+      </ul>
+      <div class="ledger-sample" aria-hidden="true">
+        <p class="sample-title">A transfer of &#8377;250.00 always has two sides</p>
+        <div class="sample-row"><span>Debit</span><span>Account A</span><span>-&#8377;250.00</span></div>
+        <div class="sample-row"><span>Credit</span><span>Account B</span><span>+&#8377;250.00</span></div>
+        <div class="sample-row sample-total"><span>Net</span><span></span><span>&#8377;0.00</span></div>
+      </div>
+    </div>
+    <div class="login-panel">
+      <div class="login-box">
+        <p class="eyebrow">Welcome back</p>
+        <h2>Sign in</h2>
+        <form id="login-form">
+          <label>Email <input id="email" type="email" autocomplete="username" required></label>
+          <label>Password <input id="password" type="password" autocomplete="current-password" required></label>
+          <div class="row">
+            <button type="submit">Sign in</button>
+            <button type="button" id="register" class="secondary">Create holder account</button>
+          </div>
+        </form>
+        <p id="login-msg" class="msg" role="alert"></p>
+        <div class="demo">
+          <p class="hint">Try a demo account (fills the form):</p>
+          <div class="row">
+            <button type="button" class="pill" data-demo="admin@ledgerline.test|AdminDemo#2026">Admin</button>
+            <button type="button" class="pill" data-demo="holder@ledgerline.test|HolderDemo#2026">Holder</button>
+            <button type="button" class="pill" data-demo="auditor@ledgerline.test|AuditorDemo#2026">Auditor</button>
+          </div>
         </div>
-      </form>
-      <p id="login-msg" class="msg" role="alert"></p>
-      <p class="hint">Demo accounts (fills the form):
-        <button type="button" class="link" data-demo="admin@ledgerline.test|AdminDemo#2026">admin</button>
-        <button type="button" class="link" data-demo="holder@ledgerline.test|HolderDemo#2026">holder</button>
-        <button type="button" class="link" data-demo="auditor@ledgerline.test|AuditorDemo#2026">auditor</button>
-      </p>
-    </section>
+        <p class="hint">New here? Create a holder account, then ask an administrator to open an account for you.</p>
+      </div>
+    </div>
+  </section>
 
     <section id="app-view" hidden>
       <div id="readonly-note" class="note" hidden>Signed in as an auditor: read-only. You can inspect everything and run the checks below, but you cannot move money.</div>
