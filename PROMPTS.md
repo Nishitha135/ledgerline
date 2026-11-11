@@ -23,7 +23,7 @@ what I did instead, and the commit.
 
 **What was wrong:** Any registered user could write refused rows, with their own email, onto another user's statement. The table is append-only, so those rows can never be removed. That is both a flooding vector and an information leak. The generated code did not flag it. It came up while writing THREATS.md.
 
-**What I did:** Refusals for an account the caller does not own are now recorded against the attacker (account_id empty, the target named in the reason) and are read by admin and auditor at GET /audit/refused. Added a test that the victim's statement stays clean and that a holder cannot read the audit endpoint.
+**What I did:** Refusals for an account the caller does not own are now recorded against the attacker (account\_id empty, the target named in the reason) and are read by admin and auditor at GET /audit/refused. Added a test that the victim's statement stays clean and that a holder cannot read the audit endpoint.
 
 **Commit:** https://github.com/Nishitha135/ledgerline/commit/2f356ad
 
@@ -33,7 +33,7 @@ what I did instead, and the commit.
 
 **Produced:** express-rate-limit with a per-IP window on the auth routes, with default settings.
 
-**What was wrong:** On Render the app sits behind proxies and Express was not told to trust them. Every request would look like it came from one proxy address, so one noisy client could lock everybody out, and the real client address was never used. The generated code said nothing about this, and my local tests could not show it because they talk to the app directly. After deploying, Claude raised it as a suspicion and I checked: the live Render logs showed ERR_ERL_UNEXPECTED_X_FORWARDED_FOR.
+**What was wrong:** On Render the app sits behind proxies and Express was not told to trust them. Every request would look like it came from one proxy address, so one noisy client could lock everybody out, and the real client address was never used. The generated code said nothing about this, and my local tests could not show it because they talk to the app directly. After deploying, Claude raised it as a suspicion and I checked: the live Render logs showed ERR\_ERL\_UNEXPECTED\_X\_FORWARDED\_FOR.
 
 **What I did:** I did not guess the number of hops (too low shares one bucket, too high lets a client forge its own address). I added a temporary endpoint that echoed X-Forwarded-For, read three addresses from a live request (internal proxy, Cloudflare, my own IP) and set trust proxy to 3. I checked on the live URL that a forged X-Forwarded-For header is ignored, pinned the behaviour with proxy.test.js (mutation: remove the setting and it fails), and removed the debug endpoint.
 
@@ -45,7 +45,7 @@ what I did instead, and the commit.
 
 **Produced:** requireRole(...) as route middleware. It answers 403 immediately, before any refusal is recorded.
 
-**What was wrong:** The spec says every refused attempt must be on the record. An auditor, or an admin trying to withdraw, got a 403 and left no trace, because the role gate ran before the code that writes refused_attempts. Claude flagged this as a suspected gap when we listed what was still missing; I did not spot it myself. I did not take the suspicion on trust.
+**What was wrong:** The spec says every refused attempt must be on the record. An auditor, or an admin trying to withdraw, got a 403 and left no trace, because the role gate ran before the code that writes refused\_attempts. Claude flagged this as a suspected gap when we listed what was still missing; I did not spot it myself. I did not take the suspicion on trust.
 
 **What I did:** Wrote rolegate.test.js first (auditor and admin make four refused attempts, expect four rows and unchanged balances), stashed the fix and ran it against the old code to confirm it fails (1 failed), then replaced requireRole on the three money routes with a roleGate that writes the refusal (no account, the role and target in the reason) and then answers 403. Holders pass every gate, so a holder cannot use it to add rows. With the fix all 30 tests pass.
 
@@ -71,6 +71,9 @@ what I did instead, and the commit.
 
 **What was wrong:** I took a screenshot of the auditor view for the README, and it still showed the holder's "Deposit done" box and "Send again with the same key" button. When I sent Claude both screenshots it noticed the same Idempotency-Key in both. On a shared browser a second user would see the first user's statement until they clicked something. The server never sent anything new (every API call is authorised separately), but a reviewer testing two accounts in one browser would fairly call it an access-control failure. The stale "send again" button also threw an error, because the saved request had been cleared.
 
-**What I did:** Added resetView(), called on sign-out, which clears the result box, statement, accounts table, audit panels, account pickers and form fields. I checked by hand on my local server: signed in as a holder, opened a statement and made a deposit, signed out, signed in as another user, and nothing from the first session was visible. I added a source-level test; there is no automated browser test.
+**What I did:** Added resetView(), called on sign-out, which clears the result box, statement, accounts table, audit panels, account pickers and form fields. I added a source-level test; there is no automated browser test.
+
+Manual verification: On the live application, signed in as a holder and opened the statement. Signed out and signed in as an auditor. Verified that the previous holder's statement was cleared and the page displayed "Choose an account above." The auditor dashboard showed "Books balance: every check passes", with zero debit-credit differences and zero account-ledger mismatches. Signed out and signed in as admin; the account creation form was displayed. The form fields still need explicit empty-field verification.
 
 **Commit:** https://github.com/Nishitha135/ledgerline/commit/cf401d4
+
